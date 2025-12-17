@@ -8,16 +8,32 @@
     <title>Flight On Time - Inicial</title>
     <link rel="stylesheet" href="./styles/style.css">
     <style>
-        .resultado-container {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            display: none; 
-            background-color: #f0f8ff;
-            border: 1px solid #007bff;
-            color: #004085;
-            font-family: Arial, sans-serif;
+        /* Variáveis de Cores para a Apresentação */
+        :root {
+            --primary: #003580;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
         }
+
+        /* Card de Resultado Refinado */
+        .resultado-container {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none; 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            border-left: 10px solid var(--primary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        /* Classes de Cores Dinâmicas */
+        .resultado-sucesso { border-color: var(--success); background-color: #e9f7ef; color: #155724; }
+        .resultado-alerta { border-color: var(--warning); background-color: #fff9e6; color: #856404; }
+        .resultado-perigo { border-color: var(--danger); background-color: #fdeaea; color: #721c24; }
+
+        .titulo-destaque { color: var(--primary); }
     </style>
 </head>
 
@@ -41,7 +57,7 @@
 
                 <p>
                     <label for="distanciaKm">Distancia:</label>
-                    <input type="text" id="distanciaKm" name="distanciaKm" placeholder="Distância em km" required>
+                    <input type="number" id="distanciaKm" name="distanciaKm" placeholder="Distância em km" required>
                     
                     <label for="dataPartida">Partida:</label>
                     <input type="date" id="dataPartida" name="dataPartida" required>
@@ -49,14 +65,13 @@
 
                 <div class="apresentacao__links">
                     <a class="apresentacao__links__navegacao" href="javascript:void(0)" onclick="enviarDados(event)">
-                        Pesquisar
+                        Pesquisar Previsão
                     </a>
                 </div>
             </form>
 
             <div id="resultado" class="resultado-container">
-                <strong>Resultado da Previsão:</strong>
-                <p id="mensagem-retorno"></p>
+                <div id="mensagem-retorno"></div>
             </div>
 
         </section>
@@ -64,20 +79,21 @@
     </main>
 
     <script>
-       async function enviarDados(event) {
+        async function enviarDados(event) {
             event.preventDefault();
 
+            // Captura de dados
             const origem = document.getElementById('origem').value;
             const destino = document.getElementById('destino').value;
             const distancia = document.getElementById('distanciaKm').value;
             const data = document.getElementById('dataPartida').value;
 
             if (!origem || !destino || !distancia || !data) {
-                alert("Por favor, preencha todos os campos.");
+                alert("Por favor, preencha todos os campos corretamente.");
                 return;
             }
 
-            // O Java (ClimaService) exige LocalDateTime completo: YYYY-MM-DDTHH:mm:ss
+            // Formatação para o Java (ISO LocalDateTime)
             const dataFormatada = data + "T12:00:00";
 
             const dadosVoo = {
@@ -87,8 +103,6 @@
                 dataPartida: dataFormatada, 
                 distanciaKm: parseInt(distancia) 
             };
-
-            console.log("Enviando dados reais para o sistema:", dadosVoo);
 
             const containerResultado = document.getElementById('resultado');
             const mensagemRetorno = document.getElementById('mensagem-retorno');
@@ -101,26 +115,43 @@
                 });
 
                 if (!response.ok) {
-                    const erroTexto = await response.text();
-                    throw new Error(erroTexto);
+                    throw new Error("Erro na resposta do servidor Java.");
                 }
 
                 const resultado = await response.json();
+                const prob = resultado.probabilidade;
 
-                // SUCESSO! Mostra o resultado da IA na tela do Wesley
+                // Lógica de Cores e Ícones baseada na probabilidade
+                let classeStatus = 'resultado-sucesso';
+                let icone = '✅';
+                let textoStatus = 'Baixo Risco';
+
+                if (prob > 10 && prob <= 30) {
+                    classeStatus = 'resultado-alerta';
+                    icone = '⚠️';
+                    textoStatus = 'Risco Moderado';
+                } else if (prob > 30) {
+                    classeStatus = 'resultado-perigo';
+                    icone = '🚨';
+                    textoStatus = 'Alto Risco de Atraso';
+                }
+
+                // Aplica o visual e mostra o resultado
                 containerResultado.style.display = 'block';
+                containerResultado.className = `resultado-container ${classeStatus}`;
+                
                 mensagemRetorno.innerHTML = `
-                    <strong>Voo Analisado com Dados Reais!</strong><br>
-                    Clima local: 23.1°C | Vento: 35km/h<br>
-                    <span style="font-size: 1.2em; color: #d9534f;">
-                        Probabilidade de Atraso: <b>${resultado.probabilidade}%</b>
-                    </span>`;
+                    <div style="font-size: 1.3rem; margin-bottom: 8px;">${icone} <strong>${textoStatus}</strong></div>
+                    <div style="font-size: 1.1rem;">Probabilidade de Atraso: <b>${prob}%</b></div>
+                    <hr style="opacity: 0.2; margin: 10px 0;">
+                    <small>Análise baseada em Clima Real e Machine Learning</small>
+                `;
                 
             } catch (error) {
                 console.error("Erro:", error);
-                alert("Erro na integração. Verifique o console do IntelliJ.");
+                alert("Erro ao conectar com o Backend. Verifique se o IntelliJ está rodando.");
             }
-       }
+        }
     </script>
 </body>
 </html>
