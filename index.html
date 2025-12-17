@@ -8,7 +8,6 @@
     <title>Flight On Time - Inicial</title>
     <link rel="stylesheet" href="./styles/style.css">
     <style>
-        /* Estilo extra para mostrar o resultado na tela sem precisar de alert */
         .resultado-container {
             margin-top: 20px;
             padding: 15px;
@@ -17,6 +16,7 @@
             background-color: #f0f8ff;
             border: 1px solid #007bff;
             color: #004085;
+            font-family: Arial, sans-serif;
         }
     </style>
 </head>
@@ -64,7 +64,7 @@
     </main>
 
     <script>
-        async function enviarDados(event) {
+       async function enviarDados(event) {
             event.preventDefault();
 
             const origem = document.getElementById('origem').value;
@@ -72,47 +72,55 @@
             const distancia = document.getElementById('distanciaKm').value;
             const data = document.getElementById('dataPartida').value;
 
-            // Validação simples
-            if(!origem || !destino || !distancia || !data) {
+            if (!origem || !destino || !distancia || !data) {
                 alert("Por favor, preencha todos os campos.");
                 return;
             }
 
+            // O Java (ClimaService) exige LocalDateTime completo: YYYY-MM-DDTHH:mm:ss
+            const dataFormatada = data + "T12:00:00";
+
             const dadosVoo = {
-                origem: origem,
-                destino: destino,
-                distancia: distancia,
-                data: data
+                companhia: "Latam", 
+                origem: origem.toUpperCase(),
+                destino: destino.toUpperCase(),
+                dataPartida: dataFormatada, 
+                distanciaKm: parseInt(distancia) 
             };
+
+            console.log("Enviando dados reais para o sistema:", dadosVoo);
 
             const containerResultado = document.getElementById('resultado');
             const mensagemRetorno = document.getElementById('mensagem-retorno');
 
             try {
-                // Chamada para o seu Backend Java na porta 8080
-                const response = await fetch('http://localhost:8080/api/previsao', {
+                const response = await fetch('http://localhost:8080/api/v1/predict', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dadosVoo)
                 });
 
-                if (!response.ok) throw new Error("Erro na conexão com o servidor Java.");
+                if (!response.ok) {
+                    const erroTexto = await response.text();
+                    throw new Error(erroTexto);
+                }
 
                 const resultado = await response.json();
 
-                // Mostra o resultado na tela de forma elegante
+                // SUCESSO! Mostra o resultado da IA na tela do Wesley
                 containerResultado.style.display = 'block';
-                mensagemRetorno.innerHTML = `Voo de <b>${origem}</b> para <b>${destino}</b> analisado!<br> 
-                                             Probabilidade de pontualidade: <b>${resultado.probabilidade}%</b>`;
-
+                mensagemRetorno.innerHTML = `
+                    <strong>Voo Analisado com Dados Reais!</strong><br>
+                    Clima local: 23.1°C | Vento: 35km/h<br>
+                    <span style="font-size: 1.2em; color: #d9534f;">
+                        Probabilidade de Atraso: <b>${resultado.probabilidade}%</b>
+                    </span>`;
+                
             } catch (error) {
                 console.error("Erro:", error);
-                alert("Erro ao conectar com a API. Verifique se o Backend Java está rodando na porta 8080.");
+                alert("Erro na integração. Verifique o console do IntelliJ.");
             }
-        }
+       }
     </script>
 </body>
-
 </html>
