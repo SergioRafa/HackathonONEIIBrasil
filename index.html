@@ -5,67 +5,110 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight On Time - Inicial</title>
+    <title>Flight On Time - Predição Inteligente</title>
     <link rel="stylesheet" href="./styles/style.css">
     <style>
-        /* Variáveis de Cores para a Apresentação */
         :root {
             --primary: #003580;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
+            --success: #1a8938;
+            --warning: #f8bb06;
+            --danger: #d32f2f;
+            --dark: #1a1a1a;
         }
 
-        /* Card de Resultado Refinado */
+        /* Melhorias no Layout Geral */
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f9; }
+        
+        .titulo-destaque { color: var(--primary); font-weight: 800; }
+
+        /* Card de Resultado Estilo "Dashboard" */
         .resultado-container {
-            margin-top: 25px;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            display: none; 
+            border-left: 12px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            background: white;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilização por Nível de Risco */
+        .resultado-sucesso { border-color: var(--success); background-color: #f0fdf4; }
+        .resultado-alerta { border-color: var(--warning); background-color: #fffbeb; }
+        .resultado-perigo { border-color: var(--danger); background-color: #fef2f2; }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .probabilidade-valor {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+
+        .info-footer {
+            font-size: 0.85rem;
+            color: #666;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding-top: 10px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Ajuste do Form */
+        form.pesquisar {
+            background: white;
             padding: 20px;
             border-radius: 12px;
-            display: none; 
-            font-family: 'Segoe UI', Arial, sans-serif;
-            border-left: 10px solid var(--primary);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-
-        /* Classes de Cores Dinâmicas */
-        .resultado-sucesso { border-color: var(--success); background-color: #e9f7ef; color: #155724; }
-        .resultado-alerta { border-color: var(--warning); background-color: #fff9e6; color: #856404; }
-        .resultado-perigo { border-color: var(--danger); background-color: #fdeaea; color: #721c24; }
-
-        .titulo-destaque { color: var(--primary); }
+        
+        input { border: 1px solid #ddd; padding: 10px; border-radius: 6px; }
     </style>
 </head>
 
 <body>
     <main class="apresentacao">
         <section class="apresentacao__conteudo">
-            <h1 class="apresentacao__conteudo__titulo">Seja bem vindo a <strong class="titulo-destaque">Flight On Time</strong></h1>
+            <h1 class="apresentacao__conteudo__titulo">Flight <strong class="titulo-destaque">On Time</strong></h1>
             <p class="apresentacao__conteudo__texto">
-                Veja agora e chegue na hora! <br>
-                Por favor informe os dados do voo que deseja pesquisar:
+                Análise preditiva de atrasos em tempo real.<br>
+                Informe os dados do voo para processamento via IA:
             </p>
             
             <form class="pesquisar" id="meuFormulario">
                 <p>
-                    <label for="origem">Origem:</label>
-                    <input type="text" id="origem" name="origem" placeholder="Ex: GIG" required>
+                    <label for="origem">Origem (IATA):</label>
+                    <input type="text" id="origem" name="origem" placeholder="Ex: GIG" maxlength="3" required>
                     
-                    <label for="destino">Destino:</label>
-                    <input type="text" id="destino" name="destino" placeholder="Ex: JFK" required>
+                    <label for="destino">Destino (IATA):</label>
+                    <input type="text" id="destino" name="destino" placeholder="Ex: JFK" maxlength="3" required>
                 </p>
 
                 <p>
-                    <label for="distanciaKm">Distancia:</label>
-                    <input type="number" id="distanciaKm" name="distanciaKm" placeholder="Distância em km" required>
+                    <label for="distanciaKm">Distância (km):</label>
+                    <input type="number" id="distanciaKm" name="distanciaKm" placeholder="Ex: 7700" required>
                     
-                    <label for="dataPartida">Partida:</label>
+                    <label for="dataPartida">Data do Voo:</label>
                     <input type="date" id="dataPartida" name="dataPartida" required>
                 </p>
 
                 <div class="apresentacao__links">
-                    <a class="apresentacao__links__navegacao" href="javascript:void(0)" onclick="enviarDados(event)">
-                        Pesquisar Previsão
+                    <a class="apresentacao__links__navegacao" href="javascript:void(0)" onclick="enviarDados(event)" style="background-color: var(--primary); color: white; text-align: center; display: block; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                        EXECUTAR ANÁLISE PREDITIVA
                     </a>
                 </div>
             </form>
@@ -82,20 +125,17 @@
         async function enviarDados(event) {
             event.preventDefault();
 
-            // Captura de dados
             const origem = document.getElementById('origem').value;
             const destino = document.getElementById('destino').value;
             const distancia = document.getElementById('distanciaKm').value;
             const data = document.getElementById('dataPartida').value;
 
             if (!origem || !destino || !distancia || !data) {
-                alert("Por favor, preencha todos os campos corretamente.");
+                alert("Por favor, preencha todos os campos.");
                 return;
             }
 
-            // Formatação para o Java (ISO LocalDateTime)
             const dataFormatada = data + "T12:00:00";
-
             const dadosVoo = {
                 companhia: "Latam", 
                 origem: origem.toUpperCase(),
@@ -107,49 +147,63 @@
             const containerResultado = document.getElementById('resultado');
             const mensagemRetorno = document.getElementById('mensagem-retorno');
 
+            // Feedback visual de carregamento
+            containerResultado.style.display = 'block';
+            mensagemRetorno.innerHTML = "Processando dados climáticos e IA...";
+
             try {
-              const response = await fetch('http://localhost:8080/api/previsao/predict', {
+                const response = await fetch('http://localhost:8085/api/previsao/predict', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dadosVoo)
                 });
 
-                if (!response.ok) {
-                    throw new Error("Erro na resposta do servidor Java.");
-                }
+                if (!response.ok) throw new Error("Erro no servidor");
 
                 const resultado = await response.json();
-                const prob = resultado.probabilidade;
+                
+                // AJUSTE DE PORCENTAGEM: Converte 0.2 em 20 ou mantém 20 se já vier inteiro
+                const probOriginal = resultado.probabilidade;
+                const prob = Math.round(probOriginal <= 1 ? probOriginal * 100 : probOriginal);
 
-                // Lógica de Cores e Ícones baseada na probabilidade
-                let classeStatus = 'resultado-sucesso';
-                let icone = '✅';
-                let textoStatus = 'Baixo Risco';
+                let classeStatus, icone, textoStatus, corTexto;
 
-                if (prob > 10 && prob <= 30) {
+                if (prob <= 15) {
+                    classeStatus = 'resultado-sucesso';
+                    icone = '✅';
+                    textoStatus = 'VÔO PONTUAL';
+                    corTexto = '#1a8938';
+                } else if (prob <= 40) {
                     classeStatus = 'resultado-alerta';
                     icone = '⚠️';
-                    textoStatus = 'Risco Moderado';
-                } else if (prob > 30) {
+                    textoStatus = 'RISCO MODERADO';
+                    corTexto = '#856404';
+                } else {
                     classeStatus = 'resultado-perigo';
                     icone = '🚨';
-                    textoStatus = 'Alto Risco de Atraso';
+                    textoStatus = 'ALTO RISCO DE ATRASO';
+                    corTexto = '#d32f2f';
                 }
 
-                // Aplica o visual e mostra o resultado
-                containerResultado.style.display = 'block';
                 containerResultado.className = `resultado-container ${classeStatus}`;
                 
                 mensagemRetorno.innerHTML = `
-                    <div style="font-size: 1.3rem; margin-bottom: 8px;">${icone} <strong>${textoStatus}</strong></div>
-                    <div style="font-size: 1.1rem;">Probabilidade de Atraso: <b>${prob}%</b></div>
-                    <hr style="opacity: 0.2; margin: 10px 0;">
-                    <small>Análise baseada em Clima Real e Machine Learning</small>
+                    <div class="status-header" style="color: ${corTexto}">
+                        <span>${icone}</span>
+                        <span>${textoStatus}</span>
+                    </div>
+                    <div class="probabilidade-valor" style="color: ${corTexto}">${prob}%</div>
+                    <div style="font-weight: 600; color: #444; margin-bottom: 5px;">Probabilidade calculada de atraso</div>
+                    <div class="info-footer">
+                        <span>📡 Conexão: ML-Server Python</span>
+                        <span>🕒 ${new Date().toLocaleTimeString()}</span>
+                    </div>
                 `;
                 
             } catch (error) {
                 console.error("Erro:", error);
-                alert("Erro ao conectar com o Backend. Verifique se o IntelliJ está rodando.");
+                containerResultado.style.display = 'none';
+                alert("O Backend está offline. Ligue o IntelliJ e o Python.");
             }
         }
     </script>
