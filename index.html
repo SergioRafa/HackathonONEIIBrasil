@@ -108,7 +108,7 @@
             const mensagemRetorno = document.getElementById('mensagem-retorno');
 
             try {
-                const response = await fetch('http://localhost:8080/api/predict', {
+              const response = await fetch('http://localhost:8080/api/previsao/predict', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dadosVoo)
