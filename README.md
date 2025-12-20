@@ -1,4 +1,3 @@
-# HackathonONEIIBrasil
 # ✈️ Flight On Time - Predição Inteligente de Atrasos
 ### Hackathon ONE II Brasil 2025
 
@@ -36,6 +35,7 @@ O fluxo de dados funciona da seguinte forma:
 ```bash
 cd projeto-ML/Projetosmlapi
 python app.py
+
 Porta: 5000
 
 2. Backend API (Java/Spring)
@@ -48,17 +48,19 @@ Executar a classe ApiApplication.
 Porta: 8085
 
 3. Frontend
-Abrir o arquivo index.html no navegador.
+Abrir o arquivo index.html no navegador (recomenda-se usar a extensão Live Server do VS Code).
 
 💡 Diferenciais do Projeto
-Resiliência: Tratamento de erros (403 Forbidden, Connection Timeout) com políticas de Fallback.
+Resiliência: Tratamento de erros (403 Forbidden, Connection Timeout) com políticas de Fallback para não interromper a experiência do usuário.
 
-Interoperabilidade: Comunicação eficiente entre Java e Python via JSON/HTTP.
+Interoperabilidade: Comunicação eficiente entre tecnologias distintas (Java e Python) via JSON/HTTP.
 
-UX/UI: Card de resultado dinâmico com alertas visuais baseados em níveis de risco (Verde, Amarelo, Vermelho).
+UX/UI: Card de resultado dinâmico com alertas visuais e ícones baseados em níveis de risco (Verde, Amarelo, Vermelho).
 
+🧪 Cenários de Teste Homologados
+Para validar a inteligência do modelo em diferentes contextos, sugerimos os seguintes dados:
 
-Projeto 3: FlightOnTime ✈️ — Previsão de Atrasos de Voos - Hackathon ONE II Brasil.
-
-
----
+Contexto,Origem,Destino,Distância (km),Risco Esperado
+Nacional (BR),GIG,GRU,440,Baixo / Moderado
+Doméstico (AU),SYD,MEL,710,Moderado
+Intercontinental,GRU,SYD,13500,Alto.
