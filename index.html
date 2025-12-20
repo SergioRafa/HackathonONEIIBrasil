@@ -16,8 +16,12 @@
             --dark: #1a1a1a;
         }
 
-        /* Melhorias no Layout Geral */
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f9; }
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #f4f7f9; 
+            margin: 0;
+            padding: 20px;
+        }
         
         .titulo-destaque { color: var(--primary); font-weight: 800; }
 
@@ -38,7 +42,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Estilização por Nível de Risco */
         .resultado-sucesso { border-color: var(--success); background-color: #f0fdf4; }
         .resultado-alerta { border-color: var(--warning); background-color: #fffbeb; }
         .resultado-perigo { border-color: var(--danger); background-color: #fef2f2; }
@@ -71,12 +74,41 @@
         /* Ajuste do Form */
         form.pesquisar {
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            max-width: 600px;
         }
         
-        input { border: 1px solid #ddd; padding: 10px; border-radius: 6px; }
+        /* TOQUE VIRGINIANO: Força maiúsculas visualmente e melhora o foco */
+        input { 
+            border: 1px solid #ddd; 
+            padding: 12px; 
+            border-radius: 6px; 
+            text-transform: uppercase; 
+            font-weight: bold;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 5px rgba(0,53,128,0.2);
+        }
+
+        label {
+            font-weight: 600;
+            color: #444;
+            display: block;
+            margin-bottom: 5px;
+            margin-top: 10px;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
     </style>
 </head>
 
@@ -90,24 +122,33 @@
             </p>
             
             <form class="pesquisar" id="meuFormulario">
-                <p>
-                    <label for="origem">Origem (IATA):</label>
-                    <input type="text" id="origem" name="origem" placeholder="Ex: GIG" maxlength="3" required>
-                    
-                    <label for="destino">Destino (IATA):</label>
-                    <input type="text" id="destino" name="destino" placeholder="Ex: JFK" maxlength="3" required>
-                </p>
+                <div class="input-group">
+                    <div>
+                        <label for="origem">Origem (IATA):</label>
+                        <input type="text" id="origem" name="origem" placeholder="Ex: GIG" maxlength="3" 
+                               oninput="this.value = this.value.toUpperCase()" required>
+                    </div>
+                    <div>
+                        <label for="destino">Destino (IATA):</label>
+                        <input type="text" id="destino" name="destino" placeholder="Ex: JFK" maxlength="3" 
+                               oninput="this.value = this.value.toUpperCase()" required>
+                    </div>
+                </div>
 
-                <p>
-                    <label for="distanciaKm">Distância (km):</label>
-                    <input type="number" id="distanciaKm" name="distanciaKm" placeholder="Ex: 7700" required>
-                    
-                    <label for="dataPartida">Data do Voo:</label>
-                    <input type="date" id="dataPartida" name="dataPartida" required>
-                </p>
+                <div class="input-group">
+                    <div>
+                        <label for="distanciaKm">Distância (km):</label>
+                        <input type="number" id="distanciaKm" name="distanciaKm" placeholder="Ex: 7700" required>
+                    </div>
+                    <div>
+                        <label for="dataPartida">Data do Voo:</label>
+                        <input type="date" id="dataPartida" name="dataPartida" required>
+                    </div>
+                </div>
 
-                <div class="apresentacao__links">
-                    <a class="apresentacao__links__navegacao" href="javascript:void(0)" onclick="enviarDados(event)" style="background-color: var(--primary); color: white; text-align: center; display: block; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                <div class="apresentacao__links" style="margin-top: 20px;">
+                    <a class="apresentacao__links__navegacao" href="javascript:void(0)" onclick="enviarDados(event)" 
+                       style="background-color: var(--primary); color: white; text-align: center; display: block; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: filter 0.2s;">
                         EXECUTAR ANÁLISE PREDITIVA
                     </a>
                 </div>
@@ -118,28 +159,29 @@
             </div>
 
         </section>
-        <img class="apresentacao__imagem" src="./assets/aviao.png" alt="Foto de aeronave">
+        <img class="apresentacao__imagem" src="./assets/aviao.png" alt="Foto de aeronave" style="max-width: 400px; margin-top: 20px;">
     </main>
 
     <script>
         async function enviarDados(event) {
             event.preventDefault();
 
-            const origem = document.getElementById('origem').value;
-            const destino = document.getElementById('destino').value;
+            // TOQUE VIRGINIANO: Garantindo que o valor capturado seja maiúsculo
+            const origem = document.getElementById('origem').value.toUpperCase();
+            const destino = document.getElementById('destino').value.toUpperCase();
             const distancia = document.getElementById('distanciaKm').value;
             const data = document.getElementById('dataPartida').value;
 
             if (!origem || !destino || !distancia || !data) {
-                alert("Por favor, preencha todos os campos.");
+                alert("Por favor, preencha todos os campos obrigatórios.");
                 return;
             }
 
             const dataFormatada = data + "T12:00:00";
             const dadosVoo = {
                 companhia: "Latam", 
-                origem: origem.toUpperCase(),
-                destino: destino.toUpperCase(),
+                origem: origem,
+                destino: destino,
                 dataPartida: dataFormatada, 
                 distanciaKm: parseInt(distancia) 
             };
@@ -147,9 +189,8 @@
             const containerResultado = document.getElementById('resultado');
             const mensagemRetorno = document.getElementById('mensagem-retorno');
 
-            // Feedback visual de carregamento
             containerResultado.style.display = 'block';
-            mensagemRetorno.innerHTML = "Processando dados climáticos e IA...";
+            mensagemRetorno.innerHTML = "<div style='text-align:center; padding: 10px;'>🛰️ Consultando StormGlass e Servidor ML...</div>";
 
             try {
                 const response = await fetch('http://localhost:8085/api/previsao/predict', {
@@ -158,11 +199,10 @@
                     body: JSON.stringify(dadosVoo)
                 });
 
-                if (!response.ok) throw new Error("Erro no servidor");
+                if (!response.ok) throw new Error("Servidor offline ou erro na rota.");
 
                 const resultado = await response.json();
                 
-                // AJUSTE DE PORCENTAGEM: Converte 0.2 em 20 ou mantém 20 se já vier inteiro
                 const probOriginal = resultado.probabilidade;
                 const prob = Math.round(probOriginal <= 1 ? probOriginal * 100 : probOriginal);
 
@@ -172,7 +212,7 @@
                     classeStatus = 'resultado-sucesso';
                     icone = '✅';
                     textoStatus = 'VÔO PONTUAL';
-                    corTexto = '#1a8938';
+                    corTexto = 'var(--success)';
                 } else if (prob <= 40) {
                     classeStatus = 'resultado-alerta';
                     icone = '⚠️';
@@ -182,7 +222,7 @@
                     classeStatus = 'resultado-perigo';
                     icone = '🚨';
                     textoStatus = 'ALTO RISCO DE ATRASO';
-                    corTexto = '#d32f2f';
+                    corTexto = 'var(--danger)';
                 }
 
                 containerResultado.className = `resultado-container ${classeStatus}`;
@@ -202,8 +242,11 @@
                 
             } catch (error) {
                 console.error("Erro:", error);
-                containerResultado.style.display = 'none';
-                alert("O Backend está offline. Ligue o IntelliJ e o Python.");
+                mensagemRetorno.innerHTML = `
+                    <div style="color: var(--danger); font-weight: bold; text-align: center;">
+                        ❌ Erro de Conexão: Certifique-se que o Spring Boot (8085) e o Python (5000) estão rodando.
+                    </div>
+                `;
             }
         }
     </script>
