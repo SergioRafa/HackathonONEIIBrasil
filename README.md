@@ -1,1 +1,64 @@
 # HackathonONEIIBrasil
+# ✈️ Flight On Time - Predição Inteligente de Atrasos
+### Hackathon ONE II Brasil 2025
+
+O **Flight On Time** é uma solução Full Stack que utiliza Inteligência Artificial para prever a probabilidade de atrasos em voos, integrando dados climáticos em tempo real e modelos de Machine Learning.
+
+---
+
+## 🚀 Tecnologias Utilizadas
+
+O projeto foi construído utilizando uma arquitetura de microsserviços:
+
+* **Frontend:** HTML5, CSS3 (Design Responsivo) e JavaScript (Fetch API).
+* **Backend (Orquestrador):** Java 17 com **Spring Boot 3.2**.
+* **Inteligência Artificial:** Python com **Flask** e Scikit-Learn.
+* **APIs Externas:** StormGlass API (Clima) e Simulação de Tráfego Aéreo.
+
+---
+
+## 🏗️ Arquitetura do Sistema
+
+O fluxo de dados funciona da seguinte forma:
+1. O **Frontend** envia os dados do voo para o **Backend Spring Boot** (Porta 8085).
+2. O **Spring Boot** consulta dados climáticos (Temperatura/Vento) e tráfego.
+3. Caso uma API externa falhe, o sistema possui **Fallback (Resiliência)** para garantir a continuidade.
+4. Os dados processados são enviados ao **Servidor ML em Python** (Porta 5000).
+5. O modelo de IA retorna a probabilidade, que é exibida visualmente no painel do usuário.
+
+
+
+---
+
+## 🛠️ Como Rodar o Projeto
+
+### 1. Servidor de Machine Learning (Python)
+```bash
+cd projeto-ML/Projetosmlapi
+python app.py
+Porta: 5000
+
+2. Backend API (Java/Spring)
+Abrir o projeto no IntelliJ IDEA.
+
+Certificar-se de que a variável de ambiente CLIMA_API_KEY está configurada.
+
+Executar a classe ApiApplication.
+
+Porta: 8085
+
+3. Frontend
+Abrir o arquivo index.html no navegador.
+
+💡 Diferenciais do Projeto
+Resiliência: Tratamento de erros (403 Forbidden, Connection Timeout) com políticas de Fallback.
+
+Interoperabilidade: Comunicação eficiente entre Java e Python via JSON/HTTP.
+
+UX/UI: Card de resultado dinâmico com alertas visuais baseados em níveis de risco (Verde, Amarelo, Vermelho).
+
+
+Projeto 3: FlightOnTime ✈️ — Previsão de Atrasos de Voos - Hackathon ONE II Brasil.
+
+
+---
