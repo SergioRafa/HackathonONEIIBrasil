@@ -1,117 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flight On Time - Predição Inteligente</title>
     <link rel="stylesheet" href="./styles/style.css">
-    <style>
-        :root {
-            --primary: #003580;
-            --success: #1a8938;
-            --warning: #f8bb06;
-            --danger: #d32f2f;
-            --dark: #1a1a1a;
-        }
-
-        body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #f4f7f9; 
-            margin: 0;
-            padding: 20px;
-        }
-        
-        .titulo-destaque { color: var(--primary); font-weight: 800; }
-
-        /* Card de Resultado Estilo "Dashboard" */
-        .resultado-container {
-            margin-top: 30px;
-            padding: 25px;
-            border-radius: 15px;
-            display: none; 
-            border-left: 12px solid var(--primary);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            background: white;
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .resultado-sucesso { border-color: var(--success); background-color: #f0fdf4; }
-        .resultado-alerta { border-color: var(--warning); background-color: #fffbeb; }
-        .resultado-perigo { border-color: var(--danger); background-color: #fef2f2; }
-
-        .status-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .probabilidade-valor {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin: 10px 0;
-        }
-
-        .info-footer {
-            font-size: 0.85rem;
-            color: #666;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            padding-top: 10px;
-            margin-top: 15px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* Ajuste do Form */
-        form.pesquisar {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-            max-width: 600px;
-        }
-        
-        /* TOQUE VIRGINIANO: Força maiúsculas visualmente e melhora o foco */
-        input { 
-            border: 1px solid #ddd; 
-            padding: 12px; 
-            border-radius: 6px; 
-            text-transform: uppercase; 
-            font-weight: bold;
-            transition: border-color 0.3s;
-        }
-
-        input:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 5px rgba(0,53,128,0.2);
-        }
-
-        label {
-            font-weight: 600;
-            color: #444;
-            display: block;
-            margin-bottom: 5px;
-            margin-top: 10px;
-        }
-
-        .input-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-    </style>
 </head>
-
 <body>
     <main class="apresentacao">
         <section class="apresentacao__conteudo">
@@ -123,32 +17,29 @@
             
             <form class="pesquisar" id="meuFormulario">
                 <div class="input-group">
-                    <div>
+                    <div class="field-container">
                         <label for="origem">Origem (IATA):</label>
-                        <input type="text" id="origem" name="origem" placeholder="Ex: GIG" maxlength="3" 
-                               oninput="this.value = this.value.toUpperCase()" required>
+                        <input type="text" id="origem" placeholder="Ex: GIG" maxlength="3" oninput="this.value = this.value.toUpperCase()" required>
                     </div>
-                    <div>
+                    <div class="field-container">
                         <label for="destino">Destino (IATA):</label>
-                        <input type="text" id="destino" name="destino" placeholder="Ex: JFK" maxlength="3" 
-                               oninput="this.value = this.value.toUpperCase()" required>
+                        <input type="text" id="destino" placeholder="Ex: JFK" maxlength="3" oninput="this.value = this.value.toUpperCase()" required>
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <div>
+                    <div class="field-container">
                         <label for="distanciaKm">Distância (km):</label>
-                        <input type="number" id="distanciaKm" name="distanciaKm" placeholder="Ex: 7700" required>
+                        <input type="number" id="distanciaKm" placeholder="Ex: 7700" required>
                     </div>
-                    <div>
+                    <div class="field-container">
                         <label for="dataPartida">Data do Voo:</label>
-                        <input type="date" id="dataPartida" name="dataPartida" required>
+                        <input type="date" id="dataPartida" required>
                     </div>
                 </div>
 
-                <div class="apresentacao__links" style="margin-top: 20px;">
-                    <a class="apresentacao__links__navegacao" href="javascript:void(0)" onclick="enviarDados(event)" 
-                       style="background-color: var(--primary); color: white; text-align: center; display: block; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: filter 0.2s;">
+                <div class="apresentacao__links">
+                    <a class="apresentacao__links__navegacao" href="javascript:void(0)" onclick="enviarDados(event)">
                         EXECUTAR ANÁLISE PREDITIVA
                     </a>
                 </div>
@@ -157,98 +48,12 @@
             <div id="resultado" class="resultado-container">
                 <div id="mensagem-retorno"></div>
             </div>
-
         </section>
-        <img class="apresentacao__imagem" src="./assets/aviao.png" alt="Foto de aeronave" style="max-width: 400px; margin-top: 20px;">
+        <img class="apresentacao__imagem" src="./assets/aviao.png" alt="Foto de aeronave">
     </main>
 
     <script>
-        async function enviarDados(event) {
-            event.preventDefault();
-
-            // TOQUE VIRGINIANO: Garantindo que o valor capturado seja maiúsculo
-            const origem = document.getElementById('origem').value.toUpperCase();
-            const destino = document.getElementById('destino').value.toUpperCase();
-            const distancia = document.getElementById('distanciaKm').value;
-            const data = document.getElementById('dataPartida').value;
-
-            if (!origem || !destino || !distancia || !data) {
-                alert("Por favor, preencha todos os campos obrigatórios.");
-                return;
-            }
-
-            const dataFormatada = data + "T12:00:00";
-            const dadosVoo = {
-                companhia: "Latam", 
-                origem: origem,
-                destino: destino,
-                dataPartida: dataFormatada, 
-                distanciaKm: parseInt(distancia) 
-            };
-
-            const containerResultado = document.getElementById('resultado');
-            const mensagemRetorno = document.getElementById('mensagem-retorno');
-
-            containerResultado.style.display = 'block';
-            mensagemRetorno.innerHTML = "<div style='text-align:center; padding: 10px;'>🛰️ Consultando StormGlass e Servidor ML...</div>";
-
-            try {
-                const response = await fetch('http://localhost:8085/api/previsao/predict', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dadosVoo)
-                });
-
-                if (!response.ok) throw new Error("Servidor offline ou erro na rota.");
-
-                const resultado = await response.json();
-                
-                const probOriginal = resultado.probabilidade;
-                const prob = Math.round(probOriginal <= 1 ? probOriginal * 100 : probOriginal);
-
-                let classeStatus, icone, textoStatus, corTexto;
-
-                if (prob <= 15) {
-                    classeStatus = 'resultado-sucesso';
-                    icone = '✅';
-                    textoStatus = 'VÔO PONTUAL';
-                    corTexto = 'var(--success)';
-                } else if (prob <= 40) {
-                    classeStatus = 'resultado-alerta';
-                    icone = '⚠️';
-                    textoStatus = 'RISCO MODERADO';
-                    corTexto = '#856404';
-                } else {
-                    classeStatus = 'resultado-perigo';
-                    icone = '🚨';
-                    textoStatus = 'ALTO RISCO DE ATRASO';
-                    corTexto = 'var(--danger)';
-                }
-
-                containerResultado.className = `resultado-container ${classeStatus}`;
-                
-                mensagemRetorno.innerHTML = `
-                    <div class="status-header" style="color: ${corTexto}">
-                        <span>${icone}</span>
-                        <span>${textoStatus}</span>
-                    </div>
-                    <div class="probabilidade-valor" style="color: ${corTexto}">${prob}%</div>
-                    <div style="font-weight: 600; color: #444; margin-bottom: 5px;">Probabilidade calculada de atraso</div>
-                    <div class="info-footer">
-                        <span>📡 Conexão: ML-Server Python</span>
-                        <span>🕒 ${new Date().toLocaleTimeString()}</span>
-                    </div>
-                `;
-                
-            } catch (error) {
-                console.error("Erro:", error);
-                mensagemRetorno.innerHTML = `
-                    <div style="color: var(--danger); font-weight: bold; text-align: center;">
-                        ❌ Erro de Conexão: Certifique-se que o Spring Boot (8085) e o Python (5000) estão rodando.
-                    </div>
-                `;
-            }
-        }
+        /* Mantenha sua função enviarDados(event) aqui ou em um arquivo .js separado */
     </script>
 </body>
 </html>

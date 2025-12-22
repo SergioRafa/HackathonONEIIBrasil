@@ -1,5 +1,5 @@
 :root {
-    --primary: #003580; /* Azul Aviação */
+    --primary: #003580;
     --secondary: #00a1de;
     --success: #28a745;
     --warning: #ffc107;
@@ -8,7 +8,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #003580 0%, #00a1de 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     display: flex;
@@ -16,61 +16,92 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
+    padding: 15px;
 }
 
 .apresentacao {
     background: white;
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    max-width: 500px;
-    width: 90%;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    max-width: 600px;
+    width: 100%;
 }
 
 .titulo-destaque { color: var(--primary); }
 
-.pesquisar p {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+.input-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
     margin-bottom: 15px;
 }
+
+.field-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+label { font-weight: 600; color: #555; font-size: 0.9rem; }
 
 input {
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
 }
+
+input:focus { border-color: var(--secondary); box-shadow: 0 0 5px rgba(0,161,222,0.3); }
 
 .apresentacao__links__navegacao {
     display: block;
     background: var(--primary);
     color: white;
     text-align: center;
-    padding: 15px;
-    border-radius: 8px;
+    padding: 18px;
+    border-radius: 10px;
     text-decoration: none;
     font-weight: bold;
+    margin-top: 10px;
     transition: 0.3s;
-    cursor: pointer;
 }
 
 .apresentacao__links__navegacao:hover {
-    background: var(--secondary);
-    transform: translateY(-2px);
+    background: #00255a;
+    transform: translateY(-3px);
 }
 
-/* O NOVO CARD DE RESULTADO */
+.apresentacao__imagem {
+    max-width: 100%;
+    height: auto;
+    margin-top: 25px;
+    border-radius: 10px;
+}
+
+/* CARD DE RESULTADO */
 .resultado-container {
     margin-top: 25px;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 12px;
     text-align: center;
     border-left: 8px solid var(--primary);
-    transition: all 0.5s ease;
+    display: none;
+    background: #fdfdfd;
 }
 
 .resultado-sucesso { border-color: var(--success); background-color: #e9f7ef; }
 .resultado-alerta { border-color: var(--warning); background-color: #fff9e6; }
 .resultado-perigo { border-color: var(--danger); background-color: #fdeaea; }
+
+/* MEDIA QUERY: Para telas pequenas (Celulares) */
+@media (max-width: 480px) {
+    .input-group {
+        grid-template-columns: 1fr; /* Muda de 2 colunas para 1 */
+    }
+    .apresentacao {
+        padding: 1.5rem;
+    }
+}
