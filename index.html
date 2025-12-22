@@ -39,9 +39,9 @@
                 </div>
 
                 <div class="apresentacao__links">
-                    <a class="apresentacao__links__navegacao" href="javascript:void(0)" onclick="enviarDados(event)">
+                    <button type="button" class="apresentacao__links__navegacao" onclick="enviarDados(event)" style="width: 100%; border: none; cursor: pointer;">
                         EXECUTAR ANÁLISE PREDITIVA
-                    </a>
+                    </button>
                 </div>
             </form>
 
@@ -53,7 +53,75 @@
     </main>
 
     <script>
-        /* Mantenha sua função enviarDados(event) aqui ou em um arquivo .js separado */
+        async function enviarDados(event) {
+            event.preventDefault();
+
+            const origem = document.getElementById('origem').value;
+            const destino = document.getElementById('destino').value;
+            const distancia = document.getElementById('distanciaKm').value;
+            const data = document.getElementById('dataPartida').value;
+
+            if (!origem || !destino || !distancia || !data) {
+                alert("Por favor, preencha todos os campos.");
+                return;
+            }
+
+            const containerResultado = document.getElementById('resultado');
+            const mensagemRetorno = document.getElementById('mensagem-retorno');
+
+            // 1. Mostrar estado de carregamento
+            containerResultado.style.display = 'block';
+            containerResultado.className = 'resultado-container'; // Reseta classes extras
+            mensagemRetorno.innerHTML = "🛰️ Consultando StormGlass e IA...";
+
+            const dadosVoo = {
+                companhia: "Latam",
+                origem: origem.toUpperCase(),
+                destino: destino.toUpperCase(),
+                dataPartida: data + "T12:00:00",
+                distanciaKm: parseInt(distancia)
+            };
+
+            try {
+                const response = await fetch('http://localhost:8085/api/previsao/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dadosVoo)
+                });
+
+                if (!response.ok) throw new Error("Erro na resposta do servidor");
+
+                const resultado = await response.json();
+                
+                // Lógica de cores baseada na probabilidade
+                const prob = Math.round(resultado.probabilidade <= 1 ? resultado.probabilidade * 100 : resultado.probabilidade);
+                
+                let classe, icone, texto;
+                if (prob <= 15) {
+                    classe = 'resultado-sucesso'; icone = '✅'; texto = 'VÔO PONTUAL';
+                } else if (prob <= 40) {
+                    classe = 'resultado-alerta'; icone = '⚠️'; texto = 'RISCO MODERADO';
+                } else {
+                    classe = 'resultado-perigo'; icone = '🚨'; texto = 'ALTO RISCO DE ATRASO';
+                }
+
+                // 2. Atualizar a interface com os dados reais
+                containerResultado.className = `resultado-container ${classe}`;
+                mensagemRetorno.innerHTML = `
+                    <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">${icone} ${texto}</div>
+                    <div style="font-size: 2.5rem; font-weight: 800;">${prob}%</div>
+                    <p style="font-size: 0.9rem; color: #666;">Probabilidade de atraso calculada via ML</p>
+                    <div style="border-top: 1px solid #ddd; margin-top: 10px; padding-top: 10px; font-size: 0.8rem;">
+                        📡 Server Flask: OK | 🕒 ${new Date().toLocaleTimeString()}
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error("Erro:", error);
+                containerResultado.className = 'resultado-container resultado-perigo';
+                mensagemRetorno.innerHTML = "❌ Erro ao conectar com o servidor. Verifique o IntelliJ e o Flask.";
+            }
+        }
     </script>
 </body>
 </html>
