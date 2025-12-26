@@ -1,38 +1,37 @@
-/* Reset e Cores Base */
-:root {
-    --cor-fundo: #0a192f;
-    --cor-primaria: #00d2ff;
-    --cor-sucesso: #2ecc71;
-    --cor-alerta: #f1c40f;
-    --cor-perigo: #e74c3c;
-    --cor-texto: #e6f1ff;
+/* Reset total para garantir que não fique branco */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
 body {
-    background: radial-gradient(circle at top, #112240 0%, var(--cor-fundo) 100%);
-    color: var(--cor-texto);
-    font-family: 'Inter', sans-serif;
+    background-color: #0a192f !important; /* Azul Marinho muito escuro */
+    color: #e6f1ff;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow: hidden;
 }
 
 .apresentacao {
     display: flex;
     align-items: center;
-    gap: 80px;
+    justify-content: space-between;
+    width: 90%;
+    max-width: 1200px;
+    background: rgba(17, 34, 64, 0.8);
     padding: 40px;
-    background: rgba(255, 255, 255, 0.03);
     border-radius: 20px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.titulo-destaque { color: var(--cor-primaria); text-shadow: 0 0 10px rgba(0, 210, 255, 0.5); }
+.apresentacao__conteudo { width: 55%; }
 
-/* Estilo do Formulário */
+.titulo-destaque { color: #00d2ff; }
+
+/* Grid do Formulário */
 .pesquisar {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -40,66 +39,60 @@ body {
     margin-top: 30px;
 }
 
+/* Agrupamento de Ícone + Nome + Input */
 .input-group {
-    position: relative;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.input-group i {
-    position: absolute;
-    left: 15px;
-    color: var(--cor-primaria);
+.input-group label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #00d2ff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 input {
     text-transform: uppercase;
-    width: 100%;
-    padding: 15px 15px 15px 45px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px;
     border-radius: 8px;
+    border: 1px solid #1e3a8a;
+    background: #112240;
     color: white;
-    transition: 0.3s;
+    font-size: 1rem;
 }
-
-input:focus { border-color: var(--cor-primaria); outline: none; background: rgba(255, 255, 255, 0.1); }
 
 button {
     grid-column: span 2;
     padding: 18px;
-    background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
-    color: white;
+    background: #00d2ff;
+    color: #0a192f;
     font-weight: bold;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    letter-spacing: 1px;
+    font-size: 1.1rem;
     transition: 0.3s;
 }
 
-button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(0, 210, 255, 0.4); }
+button:hover { background: #00b8e6; transform: translateY(-2px); }
 
-/* Cards de Resultado Coloridos */
+/* Cores dos Resultados */
 .resultado-container {
-    margin-top: 30px;
+    margin-top: 25px;
     padding: 20px;
-    border-radius: 12px;
-    font-weight: bold;
+    border-radius: 10px;
+    text-align: center;
 }
 
-.resultado-sucesso { background: rgba(46, 204, 113, 0.2); border: 2px solid var(--cor-sucesso); color: #2ecc71; }
-.resultado-alerta { background: rgba(241, 196, 15, 0.2); border: 2px solid var(--cor-alerta); color: #f1c40f; }
-.resultado-perigo { background: rgba(231, 76, 60, 0.2); border: 2px solid var(--cor-perigo); color: #e74c3c; }
+.resultado-sucesso { background: #1b4d3e; border-left: 10px solid #2ecc71; }
+.resultado-alerta { background: #5d4a1b; border-left: 10px solid #f1c40f; }
+.resultado-perigo { background: #4d1b1b; border-left: 10px solid #e74c3c; }
 
-/* Imagem com Brilho */
 .apresentacao__imagem {
-    width: 480px;
-    filter: drop-shadow(0 0 30px rgba(0, 210, 255, 0.2));
-    animation: floating 3s ease-in-out infinite;
-}
-
-@keyframes floating {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
+    width: 400px;
+    filter: drop-shadow(0 0 20px rgba(0,210,255,0.3));
 }
