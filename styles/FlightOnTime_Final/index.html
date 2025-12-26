@@ -76,24 +76,26 @@
             msg.innerHTML = '<i class="fas fa-satellite fa-spin"></i> Consultando satélites e IA...';
             btn.disabled = true;
 
-            const dados = {
-                companhia: "Latam",
-                origem: origem,
-                destino: destino,
-                dataPartida: data + "T12:00:00",
-                distanciaKm: parseInt(distancia)
-            };
+          const dados = {
+    companhia: "Latam",
+    origem: document.getElementById('origem').value.toUpperCase(),
+    destino: document.getElementById('destino').value.toUpperCase(),
+    dataPartida: document.getElementById('dataPartida').value + "T12:00:00", 
+    distanciaKm: parseFloat(document.getElementById('distanciaKm').value)
+};
 
             try {
                 // Conexão via Túnel Ngrok
                 const response = await fetch('https://uncompulsive-shelly-nonclerically.ngrok-free.dev/api/previsao/predict', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'ngrok-skip-browser-warning': 'true' 
-                    },
-                    body: JSON.stringify(dados)
-                });
+    method: 'POST',
+    headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json', // <--- IMPORTANTE: Avisa ao Java que você quer JSON
+        'ngrok-skip-browser-warning': 'true' 
+    },
+    body: JSON.stringify(dadosVoo)
+});
+                
 
                 if (!response.ok) throw new Error("Erro na resposta do servidor");
 
