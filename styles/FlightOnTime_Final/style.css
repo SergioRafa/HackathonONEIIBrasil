@@ -1,108 +1,105 @@
-/* Configurações Gerais */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Reset e Cores Base */
+:root {
+    --cor-fundo: #0a192f;
+    --cor-primaria: #00d2ff;
+    --cor-sucesso: #2ecc71;
+    --cor-alerta: #f1c40f;
+    --cor-perigo: #e74c3c;
+    --cor-texto: #e6f1ff;
 }
 
 body {
-    background-color: #001220; /* Azul Marinho Profundo */
-    color: #f0f0f0;
+    background: radial-gradient(circle at top, #112240 0%, var(--cor-fundo) 100%);
+    color: var(--cor-texto);
+    font-family: 'Inter', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    overflow: hidden;
 }
 
 .apresentacao {
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    width: 80%;
-    gap: 50px;
-}
-
-.apresentacao__conteudo {
-    width: 50%;
-}
-
-.apresentacao__conteudo__titulo {
-    font-size: 3rem;
-    margin-bottom: 20px;
-}
-
-.titulo-destaque {
-    color: #00a8ff;
-}
-
-/* Formulário Estilo Grid */
-.pesquisar {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 20px;
-    border-radius: 10px;
+    gap: 80px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.titulo-destaque { color: var(--cor-primaria); text-shadow: 0 0 10px rgba(0, 210, 255, 0.5); }
+
+/* Estilo do Formulário */
+.pesquisar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    color: var(--cor-primaria);
+}
 
 input {
     text-transform: uppercase;
-    padding: 12px;
-    border-radius: 5px;
-    border: none;
-    background: #fdfdfd;
-    color: #333;
-    font-size: 1rem;
-}
-
-input:focus {
-    outline: 2px solid #00a8ff;
-}
-
-button {
-    grid-column: span 2;
-    padding: 15px;
-    background-color: #00a8ff;
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
     color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
     transition: 0.3s;
 }
 
-button:hover {
-    background-color: #0086cc;
-}
+input:focus { border-color: var(--cor-primaria); outline: none; background: rgba(255, 255, 255, 0.1); }
 
-button:disabled {
-    background-color: #444;
-    cursor: not-allowed;
-}
-
-/* Container de Resultado */
-.resultado-container {
-    margin-top: 20px;
-    padding: 20px;
+button {
+    grid-column: span 2;
+    padding: 18px;
+    background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
+    color: white;
+    font-weight: bold;
+    border: none;
     border-radius: 8px;
-    text-align: center;
-    animation: fadeIn 0.5s ease-in;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: 0.3s;
 }
 
-.resultado-sucesso { background-color: #1b4d3e; border: 1px solid #2ecc71; }
-.resultado-alerta { background-color: #5d4a1b; border: 1px solid #f1c40f; }
-.resultado-perigo { background-color: #4d1b1b; border: 1px solid #e74c3c; }
+button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(0, 210, 255, 0.4); }
 
-/* Imagem */
+/* Cards de Resultado Coloridos */
+.resultado-container {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.resultado-sucesso { background: rgba(46, 204, 113, 0.2); border: 2px solid var(--cor-sucesso); color: #2ecc71; }
+.resultado-alerta { background: rgba(241, 196, 15, 0.2); border: 2px solid var(--cor-alerta); color: #f1c40f; }
+.resultado-perigo { background: rgba(231, 76, 60, 0.2); border: 2px solid var(--cor-perigo); color: #e74c3c; }
+
+/* Imagem com Brilho */
 .apresentacao__imagem {
-    width: 450px;
-    filter: drop-shadow(0px 10px 20px rgba(0,168,255,0.3));
+    width: 480px;
+    filter: drop-shadow(0 0 30px rgba(0, 210, 255, 0.2));
+    animation: floating 3s ease-in-out infinite;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes floating {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
 }

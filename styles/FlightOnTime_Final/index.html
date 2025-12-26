@@ -4,26 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flight On Time - IA Preditiva</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
     <main class="apresentacao">
         <section class="apresentacao__conteudo">
-            <h1 class="apresentacao__conteudo__titulo">Flight <strong class="titulo-destaque">On Time</strong></h1>
-            <p class="apresentacao__conteudo__texto">Análise de atrasos em tempo real via IA.</p>
+            <h1 class="apresentacao__conteudo__titulo">
+                <i class="fas fa-plane-departure"></i> Flight <strong class="titulo-destaque">On Time</strong>
+            </h1>
+            <p class="apresentacao__conteudo__texto">Análise de atrasos em tempo real via Inteligência Artificial.</p>
             
             <form id="meuFormulario" class="pesquisar">
-                <input type="text" id="origem" placeholder="Origem (Ex: GIG)" maxlength="3" 
-                       oninput="this.value = this.value.toUpperCase()" required>
+                <div class="input-group">
+                    <i class="fas fa-location-dot"></i>
+                    <input type="text" id="origem" placeholder="Origem (Ex: GIG)" maxlength="3" 
+                           oninput="this.value = this.value.toUpperCase()" required>
+                </div>
                 
-                <input type="text" id="destino" placeholder="Destino (Ex: JFK)" maxlength="3" 
-                       oninput="this.value = this.value.toUpperCase()" required>
+                <div class="input-group">
+                    <i class="fas fa-plane-arrival"></i>
+                    <input type="text" id="destino" placeholder="Destino (Ex: JFK)" maxlength="3" 
+                           oninput="this.value = this.value.toUpperCase()" required>
+                </div>
                 
-                <input type="number" id="distanciaKm" placeholder="Distância (km)" min="1" required>
+                <div class="input-group">
+                    <i class="fas fa-route"></i>
+                    <input type="number" id="distanciaKm" placeholder="Distância (km)" min="1" required>
+                </div>
                 
-                <input type="date" id="dataPartida" required>
+                <div class="input-group">
+                    <i class="fas fa-calendar-day"></i>
+                    <input type="date" id="dataPartida" required>
+                </div>
                 
-                <button type="button" id="btn-analisar" onclick="enviarDados(event)">EXECUTAR ANÁLISE</button>
+                <button type="button" id="btn-analisar" onclick="enviarDados(event)">
+                    <i class="fas fa-microchip"></i> EXECUTAR ANÁLISE PROFISSIONAL
+                </button>
             </form>
 
             <div id="resultado" class="resultado-container" style="display: none;">
@@ -31,41 +49,41 @@
             </div>
         </section>
         
-        <img class="apresentacao__imagem" src="assets/aviao.png" alt="Avião">
+        <div class="imagem-container">
+            <img class="apresentacao__imagem" src="assets/aviao.png" alt="Avião">
+        </div>
     </main>
 
     <script>
-        // Bloqueia datas passadas assim que a página carrega
+        // Bloqueia datas passadas ao carregar a página
         document.addEventListener('DOMContentLoaded', () => {
             const hoje = new Date().toISOString().split("T")[0];
             document.getElementById('dataPartida').setAttribute('min', hoje);
         });
 
         async function enviarDados(event) {
-            event.preventDefault(); // Previne o recarregamento da página
+            event.preventDefault();
 
             const btn = document.getElementById('btn-analisar');
             const msg = document.getElementById('mensagem-retorno');
             const resDiv = document.getElementById('resultado');
 
-            // Pegando os valores dos campos
             const origem = document.getElementById('origem').value;
             const destino = document.getElementById('destino').value;
             const distancia = document.getElementById('distanciaKm').value;
             const data = document.getElementById('dataPartida').value;
 
-            // Validação simples
             if (!origem || !destino || !distancia || !data) {
-                alert("Por favor, preencha todos os campos corretamente.");
+                alert("Por favor, preencha todos os campos.");
                 return;
             }
 
-            // 1. Feedback visual de carregamento
+            // Feedback Visual de Processamento
             resDiv.style.display = 'block';
-            resDiv.className = 'resultado-container'; // Reseta cores anteriores
-            msg.innerHTML = "🛰️ Consultando satélites e IA...";
+            resDiv.className = 'resultado-container'; 
+            msg.innerHTML = '<i class="fas fa-satellite fa-spin"></i> Consultando satélites e IA...';
             btn.disabled = true;
-            btn.innerText = "PROCESSANDO...";
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSANDO...';
 
             const dadosVoo = {
                 companhia: "Latam",
@@ -76,7 +94,6 @@
             };
 
             try {
-                // Chamada para o seu túnel do NGROK
                 const response = await fetch('https://uncompulsive-shelly-nonclerically.ngrok-free.dev/api/previsao/predict', {
                     method: 'POST',
                     headers: { 
@@ -89,39 +106,36 @@
                 if (!response.ok) throw new Error("Erro no servidor");
 
                 const resultado = await response.json();
-                
-                // Normaliza probabilidade (ex: 0.75 -> 75)
                 const probRaw = resultado.probabilidade;
                 const prob = Math.round(probRaw <= 1 ? probRaw * 100 : probRaw);
                 
-                // Define a cor do card baseada na probabilidade
                 let classe = '';
                 let icone = '';
+                
                 if (prob <= 15) {
                     classe = 'resultado-sucesso';
-                    icone = '✅';
+                    icone = '<i class="fas fa-check-circle"></i>';
                 } else if (prob <= 40) {
                     classe = 'resultado-alerta';
-                    icone = '⚠️';
+                    icone = '<i class="fas fa-exclamation-triangle"></i>';
                 } else {
                     classe = 'resultado-perigo';
-                    icone = '🚨';
+                    icone = '<i class="fas fa-radiation"></i>';
                 }
 
                 resDiv.className = `resultado-container ${classe}`;
                 msg.innerHTML = `
-                    <h2 style="margin-bottom:10px;">${icone} Risco de Atraso: ${prob}%</h2>
-                    <p>${prob <= 15 ? 'Voo com alta tendência de pontualidade.' : 'Possível impacto nas operações.'}</p>
-                    <small style="display:block; margin-top:10px; opacity:0.7;">Análise concluída com sucesso</small>
+                    <h2>${icone} Risco de Atraso: ${prob}%</h2>
+                    <p>${prob <= 15 ? 'Voo com alta tendência de pontualidade.' : 'Possível impacto nas operações detectado.'}</p>
+                    <small>📡 Fonte: IA FlightOnTime | StormGlass API</small>
                 `;
 
             } catch (e) {
-                console.error(e);
                 resDiv.className = 'resultado-container resultado-perigo';
-                msg.innerHTML = "❌ Erro ao conectar ao servidor. Verifique o IntelliJ e o Ngrok.";
+                msg.innerHTML = '<i class="fas fa-circle-xmark"></i> Erro de conexão. Verifique o Back-end.';
             } finally {
                 btn.disabled = false;
-                btn.innerText = "EXECUTAR NOVA ANÁLISE";
+                btn.innerHTML = '<i class="fas fa-microchip"></i> EXECUTAR NOVA ANÁLISE';
             }
         }
     </script>
