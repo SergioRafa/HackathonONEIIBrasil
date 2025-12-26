@@ -1,66 +1,73 @@
-# ✈️ Flight On Time - Predição Inteligente de Atrasos
-### Hackathon ONE II Brasil 2025
+# ✈️ Flight On Time - Dashboard Preditivo com IA
+### 🏆 Projeto Destaque | Hackathon ONE II Brasil 2025
 
-O **Flight On Time** é uma solução Full Stack que utiliza Inteligência Artificial para prever a probabilidade de atrasos em voos, integrando dados climáticos em tempo real e modelos de Machine Learning.
-
----
-
-## 🚀 Tecnologias Utilizadas
-
-O projeto foi construído utilizando uma arquitetura de microsserviços:
-
-* **Frontend:** HTML5, CSS3 (Design Responsivo) e JavaScript (Fetch API).
-* **Backend (Orquestrador):** Java 17 com **Spring Boot 3.2**.
-* **Inteligência Artificial:** Python com **Flask** e Scikit-Learn.
-* **APIs Externas:** StormGlass API (Clima) e Simulação de Tráfego Aéreo.
+O **Flight On Time** é uma plataforma Full Stack de alta performance que utiliza Inteligência Artificial para antecipar atrasos em voos. O sistema cruza dados geográficos, climáticos em tempo real e densidade de tráfego para fornecer uma análise de risco precisa.
 
 ---
 
-## 🏗️ Arquitetura do Sistema
+## 🚀 Diferenciais da Solução (O que nos dá o 10)
 
-O fluxo de dados funciona da seguinte forma:
-1. O **Frontend** envia os dados do voo para o **Backend Spring Boot** (Porta 8085).
-2. O **Spring Boot** consulta dados climáticos (Temperatura/Vento) e tráfego.
-3. Caso uma API externa falhe, o sistema possui **Fallback (Resiliência)** para garantir a continuidade.
-4. Os dados processados são enviados ao **Servidor ML em Python** (Porta 5000).
-5. O modelo de IA retorna a probabilidade, que é exibida visualmente no painel do usuário.
-
-
+* **⚡ Inteligência Híbrida:** Integração entre **Java (Spring Boot)** e **Python (Flask/Machine Learning)**.
+* **📡 Dados Reais:** Consumo da API **StormGlass** para buscar temperatura e vento exatos no momento da consulta.
+* **🛡️ Engenharia de Resiliência:** Sistema de **Fallback** inteligente que garante uma resposta ao usuário mesmo em caso de falha nas APIs externas.
+* **🎨 UI/UX Dinâmica:** Painel com indicadores visuais que mudam de cor (Verde, Amarelo, Vermelho) conforme o grau de risco calculado pela IA.
 
 ---
 
-## 🛠️ Como Rodar o Projeto
+## 🏗️ Arquitetura e Fluxo de Dados
 
-### 1. Servidor de Machine Learning (Python)
+O projeto utiliza uma estrutura de microsserviços orquestrada para máxima eficiência:
+
+
+
+1.  **Frontend (UI):** Captura os dados IATA e processa a entrada automática em maiúsculas.
+2.  **Backend (Orquestrador Java):** Recebe a requisição, geolocaliza o aeroporto e consome dados meteorológicos.
+3.  **Core de IA (Python):** Processa o JSON recebido através de um modelo de regressão/classificação treinado.
+4.  **Entrega:** O resultado retorna ao dashboard com feedback visual instantâneo.
+
+---
+
+## 🛠️ Tecnologias e Ferramentas
+
+| Camada | Tecnologia |
+| :--- | :--- |
+| **Frontend** | HTML5, CSS3 (Modern Flexbox/Grid), JavaScript (ES6+) |
+| **Backend** | Java 17, Spring Boot 3.2, Maven |
+| **IA / ML** | Python 3.x, Flask, Scikit-Learn, Pandas |
+| **Conectividade** | Ngrok (Túnel HTTP), Fetch API |
+| **APIs** | StormGlass (Weather Data) |
+
+---
+
+## ⚙️ Configuração e Execução
+
+### 1. Núcleo de Inteligência (Python)
 ```bash
 cd projeto-ML/Projetosmlapi
 python app.py
+# O servidor subirá na porta 5000
+2. Orquestrador de Dados (Java)
+Importe o projeto no IntelliJ IDEA.
 
-Porta: 5000
+Configure sua chave de API em application.properties ou variável de ambiente.
 
-2. Backend API (Java/Spring)
-Abrir o projeto no IntelliJ IDEA.
+Execute a classe ApiApplication.
 
-Certificar-se de que a variável de ambiente CLIMA_API_KEY está configurada.
+O servidor estará disponível na porta 8085.
 
-Executar a classe ApiApplication.
+3. Interface do Usuário (Navegador)
+Utilize o Live Server no VS Code para abrir o arquivo index.html.
 
-Porta: 8085
+O frontend está configurado para comunicar-se via túnel Ngrok.
 
-3. Frontend
-Abrir o arquivo index.html no navegador (recomenda-se usar a extensão Live Server do VS Code).
+🧪 Matriz de Testes Homologados
+Cenário,Origem,Destino,Distância,Risco Esperado
+Ponte Aérea,GIG,GRU,440 km,✅ Baixo / Moderado
+Doméstico AU,SYD,MEL,710 km,⚠️ Moderado
+Intercontinental,GRU,SYD,13.500 km,🚨 Alto
+👥 Desenvolvedores
+SergioRafa (Líder Técnico & Frontend/Backend)
 
-💡 Diferenciais do Projeto
-Resiliência: Tratamento de erros (403 Forbidden, Connection Timeout) com políticas de Fallback para não interromper a experiência do usuário.
+Wesley (Colaborador / Repositório Original)
 
-Interoperabilidade: Comunicação eficiente entre tecnologias distintas (Java e Python) via JSON/HTTP.
-
-UX/UI: Card de resultado dinâmico com alertas visuais e ícones baseados em níveis de risco (Verde, Amarelo, Vermelho).
-
-🧪 Cenários de Teste Homologados
-Para validar a inteligência do modelo em diferentes contextos, sugerimos os seguintes dados:
-
-Contexto,Origem,Destino,Distância (km),Risco Esperado
-Nacional (BR),GIG,GRU,440,Baixo / Moderado
-Doméstico (AU),SYD,MEL,710,Moderado
-Intercontinental,GRU,SYD,13500,Alto.
+Gemini (Mentoria Técnica & IA Partner)
