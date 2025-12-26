@@ -16,22 +16,22 @@
             <form id="meuFormulario" class="pesquisar">
                 <div class="input-group">
                     <label><i class="fas fa-plane-departure"></i> Aeroporto Origem</label>
-                    <input type="text" id="origem" placeholder="Ex: GIG" maxlength="3" oninput="this.value = this.value.toUpperCase()">
+                    <input type="text" id="origem" placeholder="Ex: GIG" maxlength="3" oninput="this.value = this.value.toUpperCase()" required>
                 </div>
                 
                 <div class="input-group">
                     <label><i class="fas fa-plane-arrival"></i> Aeroporto Destino</label>
-                    <input type="text" id="destino" placeholder="Ex: GRU" maxlength="3" oninput="this.value = this.value.toUpperCase()">
+                    <input type="text" id="destino" placeholder="Ex: GRU" maxlength="3" oninput="this.value = this.value.toUpperCase()" required>
                 </div>
                 
                 <div class="input-group">
                     <label><i class="fas fa-route"></i> Distância (Km)</label>
-                    <input type="number" id="distanciaKm" placeholder="Ex: 500">
+                    <input type="number" id="distanciaKm" placeholder="Ex: 500" required>
                 </div>
                 
                 <div class="input-group">
                     <label><i class="fas fa-calendar-alt"></i> Data do Voo</label>
-                    <input type="date" id="dataPartida">
+                    <input type="date" id="dataPartida" required>
                 </div>
                 
                 <button type="button" id="btn-analisar" onclick="enviarDados(event)">
@@ -48,41 +48,89 @@
     </main>
 
     <script>
+        // Trava de Data: Impede seleção de datas passadas ao carregar a página
+        document.addEventListener('DOMContentLoaded', () => {
+            const hoje = new Date().toISOString().split("T")[0];
+            document.getElementById('dataPartida').setAttribute('min', hoje);
+        });
+
         async function enviarDados(event) {
             const btn = document.getElementById('btn-analisar');
             const msg = document.getElementById('mensagem-retorno');
             const resDiv = document.getElementById('resultado');
 
+            // Pegando os valores
+            const origem = document.getElementById('origem').value;
+            const destino = document.getElementById('destino').value;
+            const distancia = document.getElementById('distanciaKm').value;
+            const data = document.getElementById('dataPartida').value;
+
+            // Validação básica
+            if (!origem || !destino || !distancia || !data) {
+                alert("Por favor, preencha todos os campos antes de analisar.");
+                return;
+            }
+
             resDiv.style.display = 'block';
             resDiv.className = 'resultado-container';
-            msg.innerHTML = "🛰️ Processando análise de risco...";
+            msg.innerHTML = '<i class="fas fa-satellite fa-spin"></i> Consultando satélites e IA...';
             btn.disabled = true;
 
             const dados = {
                 companhia: "Latam",
-                origem: document.getElementById('origem').value,
-                destino: document.getElementById('destino').value,
-                dataPartida: document.getElementById('dataPartida').value + "T12:00:00",
-                distanciaKm: parseInt(document.getElementById('distanciaKm').value)
+                origem: origem,
+                destino: destino,
+                dataPartida: data + "T12:00:00",
+                distanciaKm: parseInt(distancia)
             };
 
             try {
+                // Conexão via Túnel Ngrok
                 const response = await fetch('https://uncompulsive-shelly-nonclerically.ngrok-free.dev/api/previsao/predict', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true' 
+                    },
                     body: JSON.stringify(dados)
                 });
+
+                if (!response.ok) throw new Error("Erro na resposta do servidor");
+
                 const res = await response.json();
-                const prob = Math.round(res.probabilidade <= 1 ? res.probabilidade * 100 : res.probabilidade);
                 
-                let classe = prob <= 15 ? 'resultado-sucesso' : (prob <= 40 ? 'resultado-alerta' : 'resultado-perigo');
+                // Trata a probabilidade (converte 0.85 para 85)
+                const probRaw = res.probabilidade;
+                const prob = Math.round(probRaw <= 1 ? probRaw * 100 : probRaw);
+                
+                // Define a classe de cor baseada no risco
+                let classe = '';
+                let icone = '';
+                if (prob <= 15) {
+                    classe = 'resultado-sucesso';
+                    icone = '✅';
+                } else if (prob <= 40) {
+                    classe = 'resultado-alerta';
+                    icone = '⚠️';
+                } else {
+                    classe = 'resultado-perigo';
+                    icone = '🚨';
+                }
+
                 resDiv.className = `resultado-container ${classe}`;
-                msg.innerHTML = `<h2>Risco: ${prob}%</h2><p>Análise de tráfego e clima concluída.</p>`;
+                msg.innerHTML = `
+                    <h2>${icone} Risco: ${prob}%</h2>
+                    <p>Análise de tráfego e clima concluída para ${origem} → ${destino}.</p>
+                    <small style="opacity:0.7">📡 Dados processados em tempo real</small>
+                `;
+
             } catch (e) {
+                console.error("Erro de conexão:", e);
                 resDiv.className = 'resultado-container resultado-perigo';
-                msg.innerHTML = "❌ Erro na conexão.";
+                msg.innerHTML = '<i class="fas fa-circle-xmark"></i> Erro na conexão. Verifique o Ngrok e o IntelliJ.';
             } finally {
                 btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-microchip"></i> EXECUTAR NOVA ANÁLISE';
             }
         }
     </script>
