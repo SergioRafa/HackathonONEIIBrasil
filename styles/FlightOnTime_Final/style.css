@@ -1,0 +1,108 @@
+/* Configurações Gerais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #001220; /* Azul Marinho Profundo */
+    color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.apresentacao {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 80%;
+    gap: 50px;
+}
+
+.apresentacao__conteudo {
+    width: 50%;
+}
+
+.apresentacao__conteudo__titulo {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.titulo-destaque {
+    color: #00a8ff;
+}
+
+/* Formulário Estilo Grid */
+.pesquisar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+input {
+    text-transform: uppercase;
+    padding: 12px;
+    border-radius: 5px;
+    border: none;
+    background: #fdfdfd;
+    color: #333;
+    font-size: 1rem;
+}
+
+input:focus {
+    outline: 2px solid #00a8ff;
+}
+
+button {
+    grid-column: span 2;
+    padding: 15px;
+    background-color: #00a8ff;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #0086cc;
+}
+
+button:disabled {
+    background-color: #444;
+    cursor: not-allowed;
+}
+
+/* Container de Resultado */
+.resultado-container {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.resultado-sucesso { background-color: #1b4d3e; border: 1px solid #2ecc71; }
+.resultado-alerta { background-color: #5d4a1b; border: 1px solid #f1c40f; }
+.resultado-perigo { background-color: #4d1b1b; border: 1px solid #e74c3c; }
+
+/* Imagem */
+.apresentacao__imagem {
+    width: 450px;
+    filter: drop-shadow(0px 10px 20px rgba(0,168,255,0.3));
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
