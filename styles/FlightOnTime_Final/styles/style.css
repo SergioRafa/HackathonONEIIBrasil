@@ -92,10 +92,31 @@ button:hover { background: #00b8e6; transform: translateY(-2px); }
 .resultado-alerta { background: #5d4a1b; border-left: 10px solid #f1c40f; }
 .resultado-perigo { background: #4d1b1b; border-left: 10px solid #e74c3c; }
 
+/* Ajuste no container para garantir que nada saia da tela */
+.apresentacao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 95%; /* Aumentei um pouco */
+    max-width: 1200px;
+    background: rgba(17, 34, 64, 0.8);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    gap: 20px; /* Espaço entre texto e imagem */
+}
+
+/* Reduzi um pouco a largura do texto para sobrar espaço para a imagem */
+.apresentacao__conteudo { 
+    width: 50%; 
+}
+
+/* Melhorei a definição da imagem */
 .apresentacao__imagem {
-    width: 50%;         /* Ajusta o tamanho para ocupar metade da tela */
-    max-width: 600px;   /* Impede que ela fique grande demais em monitores gigantes */
-    height: auto;       /* Mantém a proporção sem achatar */
-    border-radius: 15px; /* Deixa as bordas arredondadas para combinar com o layout */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Adiciona uma sombra suave */
+    display: block !important; /* Garante que ela não seja ignorada */
+    width: 45%;               /* Largura ideal para caber ao lado */
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,210,255,0.2); /* Sombra azulada para combinar */
+    object-fit: cover;        /* Ajusta a imagem dentro do espaço */
 }
