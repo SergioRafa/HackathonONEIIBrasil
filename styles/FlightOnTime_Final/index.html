@@ -39,7 +39,7 @@
                 </button>
             </form>
 
-            <img class="apresentacao__imagem" src="https://cdn.pixabay.com/photo/2016/10/22/19/53/plane-1761612_1280.png" alt="Avião">
+            <div id="resultado" class="resultado-container" style="display: none;">
                 <div id="mensagem-retorno"></div>
             </div>
         </section>
@@ -48,7 +48,6 @@
     </main>
 
     <script>
-        // Trava de Data: Impede seleção de datas passadas
         document.addEventListener('DOMContentLoaded', () => {
             const hoje = new Date().toISOString().split("T")[0];
             document.getElementById('dataPartida').setAttribute('min', hoje);
@@ -69,12 +68,12 @@
                 return;
             }
 
+            // Reset do estado visual
             resDiv.style.display = 'block';
             resDiv.className = 'resultado-container';
             msg.innerHTML = '<i class="fas fa-satellite fa-spin"></i> Consultando satélites e IA...';
             btn.disabled = true;
 
-            // MONTAGEM DO OBJETO (Corrigido para bater com seu DTO Java)
             const objetoParaEnviar = {
                 companhia: "Latam",
                 origem: origem.toUpperCase(),
@@ -91,7 +90,7 @@
                         'Accept': 'application/json',
                         'ngrok-skip-browser-warning': 'true' 
                     },
-                    body: JSON.stringify(objetoParaEnviar) // Nome corrigido aqui!
+                    body: JSON.stringify(objetoParaEnviar)
                 });
 
                 if (!response.ok) throw new Error("Erro na resposta do servidor");
@@ -106,14 +105,14 @@
                 resDiv.className = `resultado-container ${classe}`;
                 msg.innerHTML = `
                     <h2>${icone} Risco: ${prob}%</h2>
-                    <p>Análise de tráfego e clima concluída para ${origem} → ${destino}.</p>
-                    <small style="opacity:0.7">📡 Dados processados via Ngrok Cloud</small>
+                    <p>Análise para ${origem} → ${destino}.</p>
+                    <small style="opacity:0.7">📡 Dados em tempo real</small>
                 `;
 
             } catch (e) {
                 console.error("Erro:", e);
                 resDiv.className = 'resultado-container resultado-perigo';
-                msg.innerHTML = '<i class="fas fa-circle-xmark"></i> Erro na conexão. O servidor está offline?';
+                msg.innerHTML = '<i class="fas fa-circle-xmark"></i> Erro na conexão. Verifique o Ngrok.';
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-microchip"></i> EXECUTAR NOVA ANÁLISE';
