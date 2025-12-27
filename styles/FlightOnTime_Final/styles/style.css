@@ -93,6 +93,9 @@ button:hover { background: #00b8e6; transform: translateY(-2px); }
 .resultado-perigo { background: #4d1b1b; border-left: 10px solid #e74c3c; }
 
 .apresentacao__imagem {
-    width: 400px;
-    filter: drop-shadow(0 0 20px rgba(0,210,255,0.3));
+    width: 50%;         /* Ajusta o tamanho para ocupar metade da tela */
+    max-width: 600px;   /* Impede que ela fique grande demais em monitores gigantes */
+    height: auto;       /* Mantém a proporção sem achatar */
+    border-radius: 15px; /* Deixa as bordas arredondadas para combinar com o layout */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Adiciona uma sombra suave */
 }

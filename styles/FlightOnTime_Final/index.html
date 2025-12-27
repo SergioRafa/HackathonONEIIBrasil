@@ -39,7 +39,7 @@
                 </button>
             </form>
 
-            <div id="resultado" class="resultado-container" style="display: none;">
+            <img class="apresentacao__imagem" src="assets/aviao.png" alt="Ilustração de um aeroporto moderno com aviões">
                 <div id="mensagem-retorno"></div>
             </div>
         </section>
@@ -48,7 +48,7 @@
     </main>
 
     <script>
-        // Trava de Data: Impede seleção de datas passadas ao carregar a página
+        // Trava de Data: Impede seleção de datas passadas
         document.addEventListener('DOMContentLoaded', () => {
             const hoje = new Date().toISOString().split("T")[0];
             document.getElementById('dataPartida').setAttribute('min', hoje);
@@ -59,15 +59,13 @@
             const msg = document.getElementById('mensagem-retorno');
             const resDiv = document.getElementById('resultado');
 
-            // Pegando os valores
             const origem = document.getElementById('origem').value;
             const destino = document.getElementById('destino').value;
             const distancia = document.getElementById('distanciaKm').value;
             const data = document.getElementById('dataPartida').value;
 
-            // Validação básica
             if (!origem || !destino || !distancia || !data) {
-                alert("Por favor, preencha todos os campos antes de analisar.");
+                alert("Por favor, preencha todos os campos.");
                 return;
             }
 
@@ -76,60 +74,46 @@
             msg.innerHTML = '<i class="fas fa-satellite fa-spin"></i> Consultando satélites e IA...';
             btn.disabled = true;
 
-          const dados = {
-    companhia: "Latam",
-    origem: document.getElementById('origem').value.toUpperCase(),
-    destino: document.getElementById('destino').value.toUpperCase(),
-    dataPartida: document.getElementById('dataPartida').value + "T12:00:00", 
-    distanciaKm: parseFloat(document.getElementById('distanciaKm').value)
-};
+            // MONTAGEM DO OBJETO (Corrigido para bater com seu DTO Java)
+            const objetoParaEnviar = {
+                companhia: "Latam",
+                origem: origem.toUpperCase(),
+                destino: destino.toUpperCase(),
+                dataPartida: data + "T12:00:00", 
+                distanciaKm: parseFloat(distancia)
+            };
 
             try {
-                // Conexão via Túnel Ngrok
                 const response = await fetch('https://uncompulsive-shelly-nonclerically.ngrok-free.dev/api/previsao/predict', {
-    method: 'POST',
-    headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json', // <--- IMPORTANTE: Avisa ao Java que você quer JSON
-        'ngrok-skip-browser-warning': 'true' 
-    },
-    body: JSON.stringify(dadosVoo)
-});
-                
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'ngrok-skip-browser-warning': 'true' 
+                    },
+                    body: JSON.stringify(objetoParaEnviar) // Nome corrigido aqui!
+                });
 
                 if (!response.ok) throw new Error("Erro na resposta do servidor");
 
                 const res = await response.json();
-                
-                // Trata a probabilidade (converte 0.85 para 85)
                 const probRaw = res.probabilidade;
                 const prob = Math.round(probRaw <= 1 ? probRaw * 100 : probRaw);
                 
-                // Define a classe de cor baseada no risco
-                let classe = '';
-                let icone = '';
-                if (prob <= 15) {
-                    classe = 'resultado-sucesso';
-                    icone = '✅';
-                } else if (prob <= 40) {
-                    classe = 'resultado-alerta';
-                    icone = '⚠️';
-                } else {
-                    classe = 'resultado-perigo';
-                    icone = '🚨';
-                }
+                let classe = prob <= 15 ? 'resultado-sucesso' : (prob <= 40 ? 'resultado-alerta' : 'resultado-perigo');
+                let icone = prob <= 15 ? '✅' : (prob <= 40 ? '⚠️' : '🚨');
 
                 resDiv.className = `resultado-container ${classe}`;
                 msg.innerHTML = `
                     <h2>${icone} Risco: ${prob}%</h2>
                     <p>Análise de tráfego e clima concluída para ${origem} → ${destino}.</p>
-                    <small style="opacity:0.7">📡 Dados processados em tempo real</small>
+                    <small style="opacity:0.7">📡 Dados processados via Ngrok Cloud</small>
                 `;
 
             } catch (e) {
-                console.error("Erro de conexão:", e);
+                console.error("Erro:", e);
                 resDiv.className = 'resultado-container resultado-perigo';
-                msg.innerHTML = '<i class="fas fa-circle-xmark"></i> Erro na conexão. Verifique o Ngrok e o IntelliJ.';
+                msg.innerHTML = '<i class="fas fa-circle-xmark"></i> Erro na conexão. O servidor está offline?';
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-microchip"></i> EXECUTAR NOVA ANÁLISE';
